@@ -3,12 +3,18 @@ import Navbar from "./components/Navbar";
 import CourseCard from "./components/CourseCard";
 import Dashboard from "./pages/Dashboard";
 import coursesData from "./data/courses.json";
+import { Plus } from "lucide-react";
+import AddCourseModal from "./components/AddCourseModal";
 
 export default function App() {
   const [activeTab, setActiveTab] = useState("catalog");
-  const [courses] = useState(coursesData);
+  const [courses,setCourses] = useState(coursesData);
   const [enrolledIds, setEnrolledIds] = useState(["c1"]);
+const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 
+const handleAddCourse = (newCourse) => {
+  setCourses((prev) => [newCourse, ...prev]);
+};
  const handleToggleEnroll = (course) => {
     if (enrolledIds.includes(course.id)) {
       setEnrolledIds(enrolledIds.filter((id) => id !== course.id));
@@ -26,12 +32,22 @@ export default function App() {
       <main className="flex-1">
         {activeTab === "catalog" && (
           <div className="max-w-6xl mx-auto px-6 py-8">
-            <div className="mb-8">
-              <h1 className="text-3xl font-extrabold text-white">Explore Courses</h1>
-              <p className="text-slate-400 mt-1">
-                Advance your engineering and software development career.
-              </p>
-            </div>
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+  <div>
+    <h1 className="text-3xl font-extrabold text-white">Explore Courses</h1>
+    <p className="text-slate-400 mt-1">
+      Advance your engineering and software development career.
+    </p>
+  </div>
+
+  <button
+    onClick={() => setIsAddModalOpen(true)}
+    className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2.5 rounded-lg text-sm font-semibold transition shadow-md cursor-pointer"
+  >
+    <Plus className="w-4 h-4" />
+    <span>Create Course</span>
+  </button>
+</div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {courses.map((course) => (
@@ -86,6 +102,11 @@ export default function App() {
           </div>
         )}
       </main>
+      <AddCourseModal
+  isOpen={isAddModalOpen}
+  onClose={() => setIsAddModalOpen(false)}
+  onAddCourse={handleAddCourse}
+/>
 
       <footer className="border-t border-slate-800 py-6 text-center text-xs text-slate-500">
         EduPulse Learning System • Software Engineering Frontend Prototype
